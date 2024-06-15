@@ -1,13 +1,8 @@
 package Principal;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
-import Connection.Conexao;
 import Connection.SQLGenerator;
 
 public class Endereco implements CRUD {
@@ -111,18 +106,107 @@ public class Endereco implements CRUD {
 
 	@Override
 	public void alterar() {
-		// TODO Auto-generated method stub
+		ArrayList<String> colunasList = new ArrayList<>();
+        ArrayList<String> valoresList = new ArrayList<>();
+
+        int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
+        String pais = JOptionPane.showInputDialog("Digite o pais:");
+        if (pais != null) {
+            colunasList.add("pais");
+            valoresList.add(pais);
+        }
+
+        String estado = JOptionPane.showInputDialog("Digite o estado:");
+        if (estado != null) {
+            colunasList.add("estado");
+            valoresList.add(estado);
+        }
+
+        String cidade = JOptionPane.showInputDialog("Digite a cidade:");
+        if (cidade != null) {
+            colunasList.add("cidade");
+            valoresList.add(cidade);
+        }
+        
+        String bairro = JOptionPane.showInputDialog("Digite o bairro:");
+        if (bairro != null) {
+            colunasList.add("bairro");
+            valoresList.add(bairro);
+        }
+
+        String rua = JOptionPane.showInputDialog("Digite a rua:");
+        if (rua != null) {
+            colunasList.add("rua");
+            valoresList.add(rua);
+        }
+        
+        String numeroInput = JOptionPane.showInputDialog("Digite o numero:");
+        int numero = Integer.parseInt(numeroInput);
+        if (numero != 0) {
+            colunasList.add("numero");
+            valoresList.add(numeroInput);
+        }
+        
+        String complemento = JOptionPane.showInputDialog("Digite o complemento:");
+        if (complemento != null) {
+            colunasList.add("complemento");
+            valoresList.add(complemento);
+        }
+
+        String cep = JOptionPane.showInputDialog("Digite o CEP:");
+        if (cep != null) {
+            colunasList.add("cep");
+            valoresList.add(cep);
+        }
+
+        String tabela = "endereco";
+        String[] colunas = colunasList.toArray(new String[0]);
+        String[] valores = valoresList.toArray(new String[0]);
+
+        if (SQLGenerator.updateSQL(tabela, idEndereco, colunas, valores)) {
+            JOptionPane.showMessageDialog(null, "Endereço alterado com sucesso!");
+        	setPais(pais);
+        	setEstado(estado);
+        	setCidade(cidade);
+        	setBairro(bairro);
+        	setRua(rua);
+        	setNumero(numero);
+        	setComplemento(complemento);
+        	setCep(cep);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
+        }
 		
 	}
 
 	@Override
 	public void excluir() {
-		// TODO Auto-generated method stub
-		
+    	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
+    	
+    	String tabela = "endereco";
+    	
+    	if (SQLGenerator.deleteSQL(tabela, idEndereco)) {
+    		JOptionPane.showMessageDialog(null, "Endereco excluído com sucesso!");
+    	} else {
+            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na exclusão.");
+        }
 	}
 
-	private void create(Endereco endereco) {
-		
+	public void listar() {
+	    String tabela = "endereco";
+
+	    Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, null));
 	}
+	
+    public void consultar() {
+    	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
+    	
+    	String tabela = "endereco";
+    	String colunas = "idEndereco, pais, estado, cidade, rua, numero, complemento, cep";
+    	String where = "WHERE idEndereco = " + idEndereco;
+    	
+    	Relatorio.mostrarDados(SQLGenerator.SelectSQL(colunas, tabela, null, where));
+    }
+
 }
 
