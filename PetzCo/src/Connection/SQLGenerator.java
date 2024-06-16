@@ -5,13 +5,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import Padrao.Log;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
-import Principal.Log;
-
 public class SQLGenerator {
-
     public static int insertSQL(String tabela, String colunas, String valores) {    
     	int lastId = 0;
 	    Statement statement = null;
@@ -31,6 +31,9 @@ public class SQLGenerator {
     }
 
     public static boolean updateSQL(String tabela, int id, String[] colunas, String[] valores) {
+    	if (colunas == null || colunas.length <= 0 || valores == null || valores.length <= 0) {
+    		return false;
+    	}
         Statement statement = null;
         String idTabela = "id" + tabela.substring(0, 1).toUpperCase() + tabela.substring(1).toLowerCase();
         try (Connection conn = Conexao.getConnection()) {
@@ -97,7 +100,7 @@ public class SQLGenerator {
 
             String query = String.format("SELECT %s FROM %s %s %s", colunas, tabela, join, where);
 
-            Log.geraLog("SelectAllSQL: " + query);
+            Log.geraLog("SelectSQL: " + query);
             resultSet = statement.executeQuery(query);
 
             ResultSetMetaData metaData = resultSet.getMetaData();

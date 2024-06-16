@@ -3,7 +3,8 @@ package Connection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import Principal.Log;
+
+import Padrao.Log;
  
 public class Conexao {
 	public Conexao () {
@@ -13,7 +14,6 @@ public class Conexao {
 	 
     public static Connection getConnection() {
     	Log.geraLog("Conectando ao banco...");
-    	System.out.println("Conectando ao banco...");
     	try {
     		return DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/dbpetzco", "root", "admin");
     	} catch (SQLException e) {

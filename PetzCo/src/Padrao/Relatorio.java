@@ -1,14 +1,9 @@
-package Principal;
+package Padrao;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import javax.swing.JOptionPane;
 
 public class Relatorio {
-    private static final DateTimeFormatter DateInputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter DateSQLFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     public static void mostrarDados(String[][] result) {
     	if (result.length <= 0) {
             JOptionPane.showMessageDialog(null, "Não há registros.");
@@ -81,8 +76,8 @@ public class Relatorio {
         }
         
         if (nomeColuna.startsWith("data")) {
-            LocalDate date = LocalDate.parse(valor, DateSQLFormatter);
-            valor = (date.format(DateInputFormatter));
+            LocalDate date = LocalDate.parse(valor, Formatos.DATE_SQL_FORMATTER);
+            valor = (date.format(Formatos.DATE_INPUT_FORMATTER));
         }
         return valor;
     }

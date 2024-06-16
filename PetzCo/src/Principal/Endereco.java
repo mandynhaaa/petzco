@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import Connection.SQLGenerator;
+import Padrao.CRUD;
+import Padrao.Relatorio;
 
 public class Endereco implements CRUD {
+	private final String tabela = "endereco";
 	private int idEndereco;
 	private String pais;
 	private String estado;
@@ -82,7 +85,6 @@ public class Endereco implements CRUD {
 	    String complemento = JOptionPane.showInputDialog("Digite o complemento:");
 	    String cep = JOptionPane.showInputDialog("Digite o CEP:");
 
-	    String tabela = "endereco";
 	    String colunas = "rua, numero, bairro, cidade, estado, complemento, cep";
 	    String valores = "'" + rua + "'," + numero + ",'" + bairro + "','" + cidade
 	                    + "','" + estado + "','" + complemento + "','" + cep  + "'";
@@ -111,80 +113,80 @@ public class Endereco implements CRUD {
 
         int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
         String pais = JOptionPane.showInputDialog("Digite o pais:");
-        if (pais != null) {
+        if (pais != null && !pais.equals("")) {
             colunasList.add("pais");
             valoresList.add(pais);
         }
 
         String estado = JOptionPane.showInputDialog("Digite o estado:");
-        if (estado != null) {
+        if (estado != null && !estado.equals("")) {
             colunasList.add("estado");
             valoresList.add(estado);
         }
 
         String cidade = JOptionPane.showInputDialog("Digite a cidade:");
-        if (cidade != null) {
+        if (cidade != null && !cidade.equals("")) {
             colunasList.add("cidade");
             valoresList.add(cidade);
         }
         
         String bairro = JOptionPane.showInputDialog("Digite o bairro:");
-        if (bairro != null) {
+        if (bairro != null && !bairro.equals("")) {
             colunasList.add("bairro");
             valoresList.add(bairro);
         }
 
         String rua = JOptionPane.showInputDialog("Digite a rua:");
-        if (rua != null) {
+        if (rua != null && !rua.equals("")) {
             colunasList.add("rua");
             valoresList.add(rua);
         }
         
         String numeroInput = JOptionPane.showInputDialog("Digite o numero:");
         int numero = Integer.parseInt(numeroInput);
-        if (numero != 0) {
+        if (numero != 0 && !numeroInput.equals("")) {
             colunasList.add("numero");
             valoresList.add(numeroInput);
         }
         
         String complemento = JOptionPane.showInputDialog("Digite o complemento:");
-        if (complemento != null) {
+        if (complemento != null && !complemento.equals("")) {
             colunasList.add("complemento");
             valoresList.add(complemento);
         }
 
         String cep = JOptionPane.showInputDialog("Digite o CEP:");
-        if (cep != null) {
+        if (cep != null && !cep.equals("")) {
             colunasList.add("cep");
             valoresList.add(cep);
         }
 
-        String tabela = "endereco";
-        String[] colunas = colunasList.toArray(new String[0]);
-        String[] valores = valoresList.toArray(new String[0]);
-
-        if (SQLGenerator.updateSQL(tabela, idEndereco, colunas, valores)) {
-            JOptionPane.showMessageDialog(null, "Endereço alterado com sucesso!");
-        	setPais(pais);
-        	setEstado(estado);
-        	setCidade(cidade);
-        	setBairro(bairro);
-        	setRua(rua);
-        	setNumero(numero);
-        	setComplemento(complemento);
-        	setCep(cep);
+        if (!colunasList.isEmpty() && !valoresList.isEmpty()) {
+	        String[] colunas = colunasList.toArray(new String[0]);
+	        String[] valores = valoresList.toArray(new String[0]);
+	
+	        if (SQLGenerator.updateSQL(tabela, idEndereco, colunas, valores)) {
+	            JOptionPane.showMessageDialog(null, "Endereço alterado com sucesso!");
+	        	setPais(pais);
+	        	setEstado(estado);
+	        	setCidade(cidade);
+	        	setBairro(bairro);
+	        	setRua(rua);
+	        	setNumero(numero);
+	        	setComplemento(complemento);
+	        	setCep(cep);
+	        } else {
+	            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
+	        }
         } else {
-            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
+        	JOptionPane.showMessageDialog(null, "Não é possível deixar os dados em branco. Nada alterado.");
         }
-		
 	}
 
 	@Override
 	public void excluir() {
     	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
-    	
-    	String tabela = "endereco";
-    	
+
     	if (SQLGenerator.deleteSQL(tabela, idEndereco)) {
     		JOptionPane.showMessageDialog(null, "Endereco excluído com sucesso!");
     	} else {
@@ -193,15 +195,12 @@ public class Endereco implements CRUD {
 	}
 
 	public void listar() {
-	    String tabela = "endereco";
-
 	    Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, null));
 	}
 	
     public void consultar() {
     	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
-    	
-    	String tabela = "endereco";
+
     	String colunas = "idEndereco, pais, estado, cidade, rua, numero, complemento, cep";
     	String where = "WHERE idEndereco = " + idEndereco;
     	

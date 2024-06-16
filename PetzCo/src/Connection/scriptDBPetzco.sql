@@ -33,6 +33,7 @@ CREATE TABLE cargoFuncionario (
 CREATE TABLE funcionario (
 	idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
 	nome VARCHAR (100),
+	cpf VARCHAR (20),
     telefone VARCHAR (20),
     email VARCHAR (100),
     dataContratacao DATE,
