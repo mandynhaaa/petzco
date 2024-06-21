@@ -83,13 +83,16 @@ public class Agendamento implements CRUD {
             JOptionPane.showMessageDialog(null, "Data de agendamento no formato incorreto. Use dd/MM/yyyy.");
             return;
         }
+
+        String dataAgendamentoFormatada = dataAgendamento.format(Formatos.DATE_SQL_FORMATTER);
+
         String observacao = JOptionPane.showInputDialog("Digite a observação:");
         int fkFuncionario = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do funcionário:"));
         int fkServico = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do serviço:"));
         int fkPet = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do pet:"));
 
         String colunas = "dataAgendamento, observacao, fkFuncionario, fkServico, fkPet";
-        String valores = "'" + Date.valueOf(dataAgendamento) + "','" + observacao + "','" + fkFuncionario + "','" + fkServico + "','" + fkPet + "'";
+        String valores = "'" + dataAgendamentoFormatada + "','" + observacao + "','" + fkFuncionario + "','" + fkServico + "','" + fkPet + "'";
 
         int idAgendamento = SQLGenerator.insertSQL(tabela, colunas, valores);
         if (idAgendamento > 0) {
@@ -118,7 +121,7 @@ public class Agendamento implements CRUD {
             try {
                 colunasList.add("dataAgendamento");
                 dataAgendamento = LocalDate.parse(dataAgendamentoInput, Formatos.DATE_INPUT_FORMATTER);
-                valoresList.add(Date.valueOf(dataAgendamento).toString());
+                valoresList.add(dataAgendamento.format(Formatos.DATE_SQL_FORMATTER));
             } catch (DateTimeParseException e) {
                 JOptionPane.showMessageDialog(null, "Data de agendamento no formato incorreto. Use dd/MM/yyyy.");
                 return;
