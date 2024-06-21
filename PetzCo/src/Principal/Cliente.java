@@ -155,7 +155,6 @@ public class Cliente extends Contato implements CRUD {
     
     public void listar() {
         Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, null));
-        
     }
     
     public void consultar() {
@@ -167,6 +166,31 @@ public class Cliente extends Contato implements CRUD {
     	String where = "WHERE idCliente = " + idCliente;
     	
     	Relatorio.mostrarDados(SQLGenerator.SelectSQL(colunas, tabela, join, where));
+    }
+    
+    public String[][] consultarOptions() {
+    	String colunas = "idCliente, nome";
+        String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, null, null);
+
+        if (resultado == null || resultado.length == 0) {
+            return new String[0][0];
+        }
+
+        int numeroLinhas = resultado.length -1;
+        int numeroColunas = resultado[0].length;
+
+        String[][] resultadoFormatado = new String[numeroLinhas][2];
+
+        for (int i = 0; i < numeroLinhas; i++) {
+        	resultadoFormatado[i][0] = resultado[i+1][0];
+            StringBuilder sb = new StringBuilder();
+            for (int j = 1; j < numeroColunas; j++) {
+                sb.append(resultado[i+1][j]);
+            }
+            resultadoFormatado[i][1] = sb.toString();
+        }
+
+        return resultadoFormatado;
     }
 }
 
