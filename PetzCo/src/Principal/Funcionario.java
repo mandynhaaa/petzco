@@ -42,7 +42,7 @@ public class Funcionario extends Contato implements CRUD {
     @Override
     public void cadastrar() {
 	    CargoFuncionario cargoFuncionario = new CargoFuncionario();
-	    String[][] options = cargoFuncionario.consultar();
+	    String[][] options = cargoFuncionario.consultarOptions();
 	    
         if (options == null || options.length == 0) {
         	JOptionPane.showMessageDialog(null, "Necessário cadastrar cargos primeiro!");
@@ -111,10 +111,18 @@ public class Funcionario extends Contato implements CRUD {
     
     @Override
     public void alterar() {
+    	CargoFuncionario cargoFuncionario = new CargoFuncionario();
+	    String[][] options = cargoFuncionario.consultarOptions();
+	    
+        if (options == null || options.length == 0) {
+        	JOptionPane.showMessageDialog(null, "Necessário cadastrar cargos primeiro!");
+        	return;
+        }
+        
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cliente:"));
+        int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionario:"));
         String nome = JOptionPane.showInputDialog("Digite o nome:");
         if (nome != null) {
             colunasList.add("nome");
@@ -139,19 +147,43 @@ public class Funcionario extends Contato implements CRUD {
             valoresList.add(email);
         }
 
-        String dataNascimentoInput = JOptionPane.showInputDialog("Digite a data de nascimento (dd/MM/yyyy):");
-        if (dataNascimentoInput != null) {
-            LocalDate dataNascimento;
+        String dataContratacaoInput = JOptionPane.showInputDialog("Digite a data de contratacao (dd/MM/yyyy):");
+        if (dataContratacaoInput != null) {
+            LocalDate dataContratacao;
 
             try {
                 colunasList.add("dataNascimento");
-                dataNascimento = LocalDate.parse(dataNascimentoInput, Formatos.DATE_INPUT_FORMATTER);
-                valoresList.add(dataNascimento.format(Formatos.DATE_SQL_FORMATTER));
+                dataContratacao = LocalDate.parse(dataContratacaoInput, Formatos.DATE_INPUT_FORMATTER);
+                valoresList.add(dataContratacao.format(Formatos.DATE_SQL_FORMATTER));
             } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(null, "Data de nascimento no formato incorreto. Use dd/MM/yyyy.");
+                JOptionPane.showMessageDialog(null, "Data de contratação no formato incorreto. Use dd/MM/yyyy.");
                 return;
             }
         }
+        
+	    JComboBox<Item> comboBox = new JComboBox<>();
+	    for (String[] option : options) {
+	        int idOption = Integer.parseInt(option[0]);
+	        String nomeOption = option[1];
+	        comboBox.addItem(new Item(idOption, nomeOption));
+	    }
+
+	    int selecao = JOptionPane.showConfirmDialog(null, comboBox, "Selecione o cargo do profissional: ", JOptionPane.OK_CANCEL_OPTION);
+
+	    int fkCargo = 0;
+	    if (selecao == JOptionPane.OK_OPTION) {
+	    	Item opcao = (Item) comboBox.getSelectedItem();
+	        if (opcao != null) {
+	        	fkCargo = opcao.getId();
+	            colunasList.add("fkCargoFuncionario");
+	            valoresList.add(Integer.toString(fkCargo));
+	            Log.geraLog("Cargo selecionado: " + opcao.getNome() + " (ID: " + fkCargo + ")");
+	        } else {
+	        	Log.geraLog("Nenhuma opção selecionada.");
+	        }
+	    } else {
+	    	Log.geraLog("Nenhuma opção selecionada.");
+	    }
         
         Endereco endereco = new Endereco();
         endereco.alterar();
@@ -165,7 +197,7 @@ public class Funcionario extends Contato implements CRUD {
         	setCpf(cpf);
         	setTelefone(telefone);
         	setEmail(email);
-        	setDataContratacao(dataNascimentoInput);
+        	setDataContratacao(dataContratacaoInput);
         } else {
             JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
         }
