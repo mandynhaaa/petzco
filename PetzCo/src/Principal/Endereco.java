@@ -81,8 +81,12 @@ public class Endereco implements CRUD {
 	    String cidade = JOptionPane.showInputDialog("Digite a cidade:");
 	    String bairro = JOptionPane.showInputDialog("Digite o bairro:");
 	    String rua = JOptionPane.showInputDialog("Digite a rua:");
-	    int numero = Integer.parseInt(JOptionPane.showInputDialog("Digite o numero:"));
-	    String complemento = JOptionPane.showInputDialog("Digite o complemento:");
+		String numeroInput = JOptionPane.showInputDialog("Digite o numero:");
+        if (numeroInput == null || numeroInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O número não pode ser nulo.");
+            return;
+        }	
+		String complemento = JOptionPane.showInputDialog("Digite o complemento:");
 	    String cep = JOptionPane.showInputDialog("Digite o CEP:");
 
 	    String colunas = "rua, numero, bairro, cidade, estado, complemento, cep";
@@ -110,9 +114,13 @@ public class Endereco implements CRUD {
 	public void alterar() {
 		ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
-
-        int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
-        String pais = JOptionPane.showInputDialog("Digite o pais:");
+        String idEnderecoInput = JOptionPane.showInputDialog("Digite o código do endereço:");
+        if (idEnderecoInput == null || idEnderecoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do endereço não pode ser nulo.");
+            return;
+        }
+        int idEndereco = Integer.parseInt(idEnderecoInput);
+		String pais = JOptionPane.showInputDialog("Digite o pais:");
         if (pais != null && !pais.equals("")) {
             colunasList.add("pais");
             valoresList.add(pais);
@@ -185,7 +193,12 @@ public class Endereco implements CRUD {
 
 	@Override
 	public void excluir() {
-    	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
+        String idEnderecoInput = JOptionPane.showInputDialog("Digite o código do endereço:");
+        if (idEnderecoInput == null || idEnderecoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do endereço não pode ser nulo.");
+            return;
+        }
+        int idEndereco = Integer.parseInt(idEnderecoInput);
 
     	if (SQLGenerator.deleteSQL(tabela, idEndereco)) {
     		JOptionPane.showMessageDialog(null, "Endereco excluído com sucesso!");
@@ -199,7 +212,12 @@ public class Endereco implements CRUD {
 	}
 	
     public void consultar() {
-    	int idEndereco = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do endereço:"));
+		String idEnderecoInput = JOptionPane.showInputDialog("Digite o código do endereço:");
+        if (idEnderecoInput == null || idEnderecoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do endereço não pode ser nulo.");
+            return;
+        }
+        int idEndereco = Integer.parseInt(idEnderecoInput);
 
     	String colunas = "idEndereco, pais, estado, cidade, rua, numero, complemento, cep";
     	String where = "WHERE idEndereco = " + idEndereco;

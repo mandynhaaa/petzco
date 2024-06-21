@@ -78,8 +78,12 @@ public class Servico implements CRUD {
             return;
         }
         float valor = Float.parseFloat(JOptionPane.showInputDialog("Digite o valor:"));
-        int fkCargoFuncionario = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do cargo do funcionário:"));
-
+        String fkCargoFuncionarioInput = JOptionPane.showInputDialog("Digite o ID do cargo do funcionário:");
+        if (fkCargoFuncionarioInput == null || fkCargoFuncionarioInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O ID do cargo do funcionário não pode ser nulo.");
+            return;
+        }
+        int fkCargoFuncionario = Integer.parseInt(fkCargoFuncionarioInput);
         String colunas = "isDisponivel, tempoEstimado, descricao, valor, fkCargoFuncionario";
         String valores = "'" + isDisponivel + "','" + tempoEstimado + "','" + descricao + "','" + valor + "','" + fkCargoFuncionario + "'";
 
