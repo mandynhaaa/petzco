@@ -56,7 +56,7 @@ public class CargoFuncionario implements CRUD {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cargo:"));
+        int idCargo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cargo:"));
         String nomeCargo = JOptionPane.showInputDialog("Digite o cargo:");
         if (nomeCargo != null && !nomeCargo.equals("")) {
             colunasList.add("nomeCargo");
@@ -73,7 +73,7 @@ public class CargoFuncionario implements CRUD {
         	String[] colunas = colunasList.toArray(new String[0]);
         	String[] valores = valoresList.toArray(new String[0]);
         	
-        	if (SQLGenerator.updateSQL(tabela, idCliente, colunas, valores)) {
+        	if (SQLGenerator.updateSQL(tabela, idCargo, colunas, valores)) {
         		JOptionPane.showMessageDialog(null, "Cargo alterado com sucesso!");
         		setNomeCargo(nomeCargo);
         		setSalarioBase(salarioBase);
@@ -83,7 +83,6 @@ public class CargoFuncionario implements CRUD {
         } else {
         	JOptionPane.showMessageDialog(null, "Não é possível deixar os dados em branco. Nada alterado.");
         }
-
     }
     
     @Override
@@ -101,7 +100,7 @@ public class CargoFuncionario implements CRUD {
         Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, null));
     }
     
-    public String[][] consultar() {
+    public String[][] consultarOptions() {
         String[][] resultado = SQLGenerator.SelectSQL(null, tabela, null, null);
 
         if (resultado == null || resultado.length == 0) {
