@@ -2,7 +2,6 @@ package Principal;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -351,5 +350,23 @@ public class Agendamento implements CRUD {
         String where = "WHERE idAgendamento = " + idAgendamento;
 
         Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, where));
+    }
+    
+    public int consultarAgendamentoPet(int fkPet) {
+    	String colunas = "idAgendamento";
+        String where = "WHERE fkPet = " + fkPet;
+        
+        String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, null, where);
+
+	    int numeroLinhas = resultado.length -1;
+	    int numeroColunas = resultado[0].length;
+	    
+	    for (int i = 0; i < numeroLinhas; i++) {
+	        for (int j = 0; j < numeroColunas; j++) {
+	        	Log.geraLog(resultado[i+1][j]);
+	        	SQLGenerator.deleteSQL(tabela, Integer.parseInt(resultado[i+1][j]));
+	        }
+	    }
+	    return 1;
     }
 }

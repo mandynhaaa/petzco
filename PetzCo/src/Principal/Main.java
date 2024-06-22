@@ -2,10 +2,15 @@ package Principal;
 
 public class Main {
 	public static void main(String[] args) {
-//		Servico servico = new Servico();
-//		servico.cadastrar();
-		
-		Agendamento agendamento = new Agendamento();
-		agendamento.cadastrar();
+        Cliente cliente = new Cliente();
+        Pet pet = new Pet();
+        Agendamento agendamento = new Agendamento();
+
+        cliente.listar();
+        pet.cadastrar();
+        agendamento.cadastrar();
+        agendamento.alterar();
+        pet.listar();
+        agendamento.excluir();
 	}
 }

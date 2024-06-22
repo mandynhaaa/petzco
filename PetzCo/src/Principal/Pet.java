@@ -230,13 +230,15 @@ public class Pet implements CRUD{
 	    }
 		
 		int idPet = Integer.parseInt(idPetInput);
-    	
-    	if (SQLGenerator.deleteSQL(tabela, idPet)) {
-    		JOptionPane.showMessageDialog(null, "Pet excluído com sucesso!");
-    	} else {
-            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na exclusão.");
-        }
 		
+		Agendamento agendamento = new Agendamento();
+		if (agendamento.consultarAgendamentoPet(idPet) > 0) {				
+			if (SQLGenerator.deleteSQL(tabela, idPet)) {
+				JOptionPane.showMessageDialog(null, "Pet excluído com sucesso!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Ocorreu algum erro na exclusão.");
+			}
+		}
 	}
 	@Override
 	public void listar() {
