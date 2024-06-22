@@ -92,28 +92,7 @@ public class Agendamento implements CRUD {
 
         String observacao = JOptionPane.showInputDialog("Digite a observação:");
         
-	    JComboBox<Item> comboBoxFuncionario = new JComboBox<>();
-	    for (String[] option : optionsFuncionario) {
-	        int idOption = Integer.parseInt(option[0]);
-	        String nomeOption = option[1];
-	        comboBoxFuncionario.addItem(new Item(idOption, nomeOption));
-	    }
-
-	    int selecao = JOptionPane.showConfirmDialog(null, comboBoxFuncionario, "Selecione o funcionário: ", JOptionPane.OK_CANCEL_OPTION);
-
-	    int fkFuncionario = 0;
-	    if (selecao == JOptionPane.OK_OPTION) {
-	    	Item opcao = (Item) comboBoxFuncionario.getSelectedItem();
-	        if (opcao != null) {
-	        	fkFuncionario = opcao.getId();
-	            Log.geraLog("Funcionário selecionado: " + opcao.getNome() + " (ID: " + fkFuncionario + ")");
-	        } else {
-	        	Log.geraLog("Nenhuma opção selecionada.");
-	        }
-	    } else {
-	    	Log.geraLog("Nenhuma opção selecionada.");
-	    }
-	    
+	    	    
 	    JComboBox<Item> comboBoxPet = new JComboBox<>();
 	    for (String[] option : optionsPet) {
 	        int idOption = Integer.parseInt(option[0]);
@@ -121,7 +100,7 @@ public class Agendamento implements CRUD {
 	        comboBoxPet.addItem(new Item(idOption, nomeOption));
 	    }
 
-	    selecao = JOptionPane.showConfirmDialog(null, comboBoxPet, "Selecione o pet: ", JOptionPane.OK_CANCEL_OPTION);
+	    int selecao = JOptionPane.showConfirmDialog(null, comboBoxPet, "Selecione o pet: ", JOptionPane.OK_CANCEL_OPTION);
 
 	    int fkPet = 0;
 	    if (selecao == JOptionPane.OK_OPTION) {
@@ -151,6 +130,35 @@ public class Agendamento implements CRUD {
 	        if (opcao != null) {
 	        	fkServico = opcao.getId();
 	            Log.geraLog("Serviço selecionado: " + opcao.getNome() + " (ID: " + fkServico + ")");
+	        } else {
+	        	Log.geraLog("Nenhuma opção selecionada.");
+	        }
+	    } else {
+	    	Log.geraLog("Nenhuma opção selecionada.");
+	    }
+	    
+	    optionsFuncionario = funcionario.consultarOptions(fkServico);
+		
+		if (optionsFuncionario == null || optionsFuncionario.length == 0) {
+			JOptionPane.showMessageDialog(null, "Necessário cadastrar funcionários primeiro!");
+			return;
+		}
+		
+	    JComboBox<Item> comboBoxFuncionario = new JComboBox<>();
+	    for (String[] option : optionsFuncionario) {
+	        int idOption = Integer.parseInt(option[0]);
+	        String nomeOption = option[1];
+	        comboBoxFuncionario.addItem(new Item(idOption, nomeOption));
+	    }
+
+	    selecao = JOptionPane.showConfirmDialog(null, comboBoxFuncionario, "Selecione o funcionário: ", JOptionPane.OK_CANCEL_OPTION);
+
+	    int fkFuncionario = 0;
+	    if (selecao == JOptionPane.OK_OPTION) {
+	    	Item opcao = (Item) comboBoxFuncionario.getSelectedItem();
+	        if (opcao != null) {
+	        	fkFuncionario = opcao.getId();
+	            Log.geraLog("Funcionário selecionado: " + opcao.getNome() + " (ID: " + fkFuncionario + ")");
 	        } else {
 	        	Log.geraLog("Nenhuma opção selecionada.");
 	        }
@@ -226,39 +234,15 @@ public class Agendamento implements CRUD {
             colunasList.add("observacao");
             valoresList.add(observacao);
         }
-
-	    JComboBox<Item> comboBoxFuncionario = new JComboBox<>();
-	    for (String[] option : optionsFuncionario) {
-	        int idOption = Integer.parseInt(option[0]);
-	        String nomeOption = option[1];
-	        comboBoxFuncionario.addItem(new Item(idOption, nomeOption));
-	    }
-
-	    int selecao = JOptionPane.showConfirmDialog(null, comboBoxFuncionario, "Selecione o funcionário: ", JOptionPane.OK_CANCEL_OPTION);
-
-	    int fkFuncionario = 0;
-	    if (selecao == JOptionPane.OK_OPTION) {
-	    	Item opcao = (Item) comboBoxFuncionario.getSelectedItem();
-	        if (opcao != null) {
-	        	fkFuncionario = opcao.getId();
-	            colunasList.add("fkFuncionario");
-	            valoresList.add(Integer.toString(fkFuncionario));
-	            Log.geraLog("Funcionário selecionado: " + opcao.getNome() + " (ID: " + fkFuncionario + ")");
-	        } else {
-	        	Log.geraLog("Nenhuma opção selecionada.");
-	        }
-	    } else {
-	    	Log.geraLog("Nenhuma opção selecionada.");
-	    }
-	    
-	    JComboBox<Item> comboBoxPet = new JComboBox<>();
+        
+        JComboBox<Item> comboBoxPet = new JComboBox<>();
 	    for (String[] option : optionsPet) {
 	        int idOption = Integer.parseInt(option[0]);
 	        String nomeOption = option[1];
 	        comboBoxPet.addItem(new Item(idOption, nomeOption));
 	    }
 
-	    selecao = JOptionPane.showConfirmDialog(null, comboBoxPet, "Selecione o pet: ", JOptionPane.OK_CANCEL_OPTION);
+	    int selecao = JOptionPane.showConfirmDialog(null, comboBoxPet, "Selecione o pet: ", JOptionPane.OK_CANCEL_OPTION);
 
 	    int fkPet = 0;
 	    if (selecao == JOptionPane.OK_OPTION) {
@@ -298,7 +282,38 @@ public class Agendamento implements CRUD {
 	    } else {
 	    	Log.geraLog("Nenhuma opção selecionada.");
 	    }
-	    
+
+        optionsFuncionario = funcionario.consultarOptions(fkServico);
+		
+		if (optionsFuncionario == null || optionsFuncionario.length == 0) {
+			JOptionPane.showMessageDialog(null, "Necessário cadastrar funcionários primeiro!");
+			return;
+		}
+		
+	    JComboBox<Item> comboBoxFuncionario = new JComboBox<>();
+	    for (String[] option : optionsFuncionario) {
+	        int idOption = Integer.parseInt(option[0]);
+	        String nomeOption = option[1];
+	        comboBoxFuncionario.addItem(new Item(idOption, nomeOption));
+	    }
+
+	    selecao = JOptionPane.showConfirmDialog(null, comboBoxFuncionario, "Selecione o funcionário: ", JOptionPane.OK_CANCEL_OPTION);
+
+	    int fkFuncionario = 0;
+	    if (selecao == JOptionPane.OK_OPTION) {
+	    	Item opcao = (Item) comboBoxFuncionario.getSelectedItem();
+	        if (opcao != null) {
+	        	fkFuncionario = opcao.getId();
+	            colunasList.add("fkFuncionario");
+	            valoresList.add(Integer.toString(fkFuncionario));
+	            Log.geraLog("Funcionário selecionado: " + opcao.getNome() + " (ID: " + fkFuncionario + ")");
+	        } else {
+	        	Log.geraLog("Nenhuma opção selecionada.");
+	        }
+	    } else {
+	    	Log.geraLog("Nenhuma opção selecionada.");
+	    }
+	    	    
         if (!colunasList.isEmpty() && !valoresList.isEmpty()) {
             String[] colunas = colunasList.toArray(new String[0]);
             String[] valores = valoresList.toArray(new String[0]);
