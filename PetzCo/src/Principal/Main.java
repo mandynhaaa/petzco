@@ -8,9 +8,10 @@ public class Main {
 
         cliente.listar();
         pet.cadastrar();
+        pet.listar();
         agendamento.cadastrar();
         agendamento.alterar();
-        pet.listar();
+        agendamento.listar();
         agendamento.excluir();
 	}
 }

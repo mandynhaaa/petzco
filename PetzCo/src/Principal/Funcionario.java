@@ -285,5 +285,36 @@ public class Funcionario extends Contato implements CRUD {
 	
 	    return resultadoFormatado;
 	}
+    
+    public String[][] consultarOptions(int fkServico) {
+		String colunas = "idFuncionario, funcionario.nome, cargoFuncionario.nomeCargo cargo";
+		String join = "INNER JOIN cargoFuncionario on (cargoFuncionario.idCargoFuncionario = funcionario.fkCargoFuncionario) "
+				+ "INNER JOIN servico on (servico.fkCargoFuncionario = funcionario.fkCargoFuncionario)";
+		String where = "WHERE servico.idServico = " + fkServico;
+	    String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, join, where);
+	
+	    if (resultado == null || resultado.length == 0) {
+	        return new String[0][0];
+	    }
+	
+	    int numeroLinhas = resultado.length -1;
+	    int numeroColunas = resultado[0].length;
+	
+	    String[][] resultadoFormatado = new String[numeroLinhas][2];
+	
+	    for (int i = 0; i < numeroLinhas; i++) {
+	    	resultadoFormatado[i][0] = resultado[i+1][0];
+	        StringBuilder sb = new StringBuilder();
+	        for (int j = 1; j < numeroColunas; j++) {
+                if (j > 1) {
+                    sb.append(" - ");
+                }
+                sb.append(resultado[i+1][j]);
+	        }
+	        resultadoFormatado[i][1] = sb.toString();
+	    }
+	
+	    return resultadoFormatado;
+	}
 }
 
