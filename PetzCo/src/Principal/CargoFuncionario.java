@@ -56,7 +56,13 @@ public class CargoFuncionario implements CRUD {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idCargo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cargo:"));
+        String idCargoInput = JOptionPane.showInputDialog("Digite o código do cargo:");
+        if (idCargoInput == null || idCargoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do cargo não pode ser nulo.");
+            return;
+        }
+        int idCargo = Integer.parseInt(idCargoInput);
+
         String nomeCargo = JOptionPane.showInputDialog("Digite o cargo:");
         if (nomeCargo != null && !nomeCargo.equals("")) {
             colunasList.add("nomeCargo");
@@ -87,8 +93,14 @@ public class CargoFuncionario implements CRUD {
     
     @Override
     public void excluir() {
-    	int idCargo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cargo:"));
-    	
+        
+        String idCargoInput = JOptionPane.showInputDialog("Digite o código do cargo:");
+        if (idCargoInput == null || idCargoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do cargo não pode ser nulo.");
+            return;
+        }
+        int idCargo = Integer.parseInt(idCargoInput);
+
     	if (SQLGenerator.deleteSQL(tabela, idCargo)) {
     		JOptionPane.showMessageDialog(null, "Cargo excluído com sucesso!");
     	} else {

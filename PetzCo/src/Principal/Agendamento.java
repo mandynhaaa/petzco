@@ -109,8 +109,13 @@ public class Agendamento implements CRUD {
     public void alterar() {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
-
-        int idAgendamento = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do agendamento:"));
+       
+        String idAgendamentoInput = JOptionPane.showInputDialog("Digite o código do agendamento:");
+        if (idAgendamentoInput == null || idAgendamentoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do agendamento não pode ser nulo.");
+            return;
+        }
+        int idAgendamento = Integer.parseInt(idAgendamentoInput);
 
         String dataAgendamentoInput = JOptionPane.showInputDialog("Digite a data do agendamento (dd/MM/yyyy):");
         if (dataAgendamentoInput != null && !dataAgendamentoInput.equals("")) {
@@ -170,7 +175,13 @@ public class Agendamento implements CRUD {
 
     @Override
     public void excluir() {
-        int idAgendamento = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do agendamento:"));
+       
+        String idAgendamentoInput = JOptionPane.showInputDialog("Digite o código do agendamento:");
+        if (idAgendamentoInput == null || idAgendamentoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do agendamento não pode ser nulo.");
+            return;
+        }
+        int idAgendamento = Integer.parseInt(idAgendamentoInput);
 
         if (SQLGenerator.deleteSQL(tabela, idAgendamento)) {
             JOptionPane.showMessageDialog(null, "Agendamento excluído com sucesso!");
@@ -184,7 +195,13 @@ public class Agendamento implements CRUD {
     }
 
     public void consultar() {
-        int idAgendamento = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do agendamento:"));
+       
+        String idAgendamentoInput = JOptionPane.showInputDialog("Digite o código do agendamento:");
+        if (idAgendamentoInput == null || idAgendamentoInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do agendamento não pode ser nulo.");
+            return;
+        }
+        int idAgendamento = Integer.parseInt(idAgendamentoInput);
 
         String colunas = "idAgendamento, dataAgendamento, observacao, fkFuncionario, fkServico, fkPet";
         String where = "WHERE idAgendamento = " + idAgendamento;
