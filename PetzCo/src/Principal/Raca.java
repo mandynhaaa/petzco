@@ -82,6 +82,9 @@ public class Raca implements CRUD {
 	    }
 	    
 	    String nome = JOptionPane.showInputDialog("Digite o nome da raça:");
+	    if (nome == null || nome.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário inserir o nome da raça.");
+	    }
 	    String porte = JOptionPane.showInputDialog("Digite o porte da raça:");
 	    String descricao = JOptionPane.showInputDialog("Digite a descrição da raça:");
 
@@ -104,7 +107,12 @@ public class Raca implements CRUD {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código da raça:"));
+        String idRacaInput = JOptionPane.showInputDialog("Digite o código da raça:");
+	    if (idRacaInput == null || idRacaInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código da raça não pode ser nulo.");
+	    	return;
+	    }
+	    int idRaca = Integer.parseInt(idRacaInput);
         String nome = JOptionPane.showInputDialog("Digite o nome da raça:");
         if (nome != null && !nome.equals("")) {
             colunasList.add("nome");
@@ -127,11 +135,17 @@ public class Raca implements CRUD {
         	String[] colunas = colunasList.toArray(new String[0]);
         	String[] valores = valoresList.toArray(new String[0]);
         	
-        	if (SQLGenerator.updateSQL(tabela, idCliente, colunas, valores)) {
+        	if (SQLGenerator.updateSQL(tabela, idRaca, colunas, valores)) {
         		JOptionPane.showMessageDialog(null, "Raça alterada com sucesso!");
-            	setNome(nome);                                                                                                       
-            	setPorte(porte);
-            	setDescricao(descricao);
+        		if (colunasList.contains("nome")) {        			
+        			setNome(nome);                                                                                                       
+        		}
+        		if (colunasList.contains("porte")) {
+        			setPorte(porte);
+        		}
+        		if (colunasList.contains("descricao")) {
+        			setDescricao(descricao);
+        		}
         	} else {
         		JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
         	}
@@ -142,7 +156,13 @@ public class Raca implements CRUD {
 
 	@Override
 	public void excluir() {
-    	int idRaca = Integer.parseInt(JOptionPane.showInputDialog("Digite o código da raça:"));
+        String idRacaInput = JOptionPane.showInputDialog("Digite o código da raça:");
+	    if (idRacaInput == null || idRacaInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código da raça não pode ser nulo.");
+	    	return;
+	    }
+	    int idRaca = Integer.parseInt(idRacaInput);
+
     	
     	if (SQLGenerator.deleteSQL(tabela, idRaca)) {
     		JOptionPane.showMessageDialog(null, "Raça excluído com sucesso!");

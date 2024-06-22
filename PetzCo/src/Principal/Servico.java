@@ -1,11 +1,14 @@
 package Principal;
 
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import java.sql.Time;
 import java.util.ArrayList;
 
 import Connection.SQLGenerator;
 import Padrao.CRUD;
+import Padrao.Item;
+import Padrao.Log;
 import Padrao.Relatorio;
 
 public class Servico implements CRUD {
@@ -15,7 +18,6 @@ public class Servico implements CRUD {
     private Time tempoEstimado;
     private String descricao;
     private float valor;
-    private int fkCargoFuncionario;
 
     public int getIdServico() {
         return idServico;
@@ -57,18 +59,26 @@ public class Servico implements CRUD {
         this.valor = valor;
     }
 
-    public int getFkCargoFuncionario() {
-        return fkCargoFuncionario;
-    }
-
-    public void setFkCargoFuncionario(int fkCargoFuncionario) {
-        this.fkCargoFuncionario = fkCargoFuncionario;
-    }
-
     @Override
     public void cadastrar() {
+	    CargoFuncionario cargoFuncionario = new CargoFuncionario();
+	    String[][] options = cargoFuncionario.consultarOptions();
+	    
+        if (options == null || options.length == 0) {
+        	JOptionPane.showMessageDialog(null, "Necessário cadastrar cargos primeiro!");
+        	return;
+        }
+        
         String descricao = JOptionPane.showInputDialog("Digite a descrição:");
-        boolean isDisponivel = JOptionPane.showConfirmDialog(null, "Está disponível?") == JOptionPane.YES_OPTION;
+        if (descricao == null || descricao.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário inserir a descrição do serviço.");
+	    	return;
+	    }
+        boolean isDisponivelInput = JOptionPane.showConfirmDialog(null, "Está disponível?") == JOptionPane.YES_OPTION;
+        int isDisponivel = 1;
+        if (!isDisponivelInput) {
+        	isDisponivel = 0;
+        }
         String tempoEstimadoInput = JOptionPane.showInputDialog("Digite o tempo estimado (HH:MM:SS):");
         Time tempoEstimado;
         try {
@@ -78,24 +88,40 @@ public class Servico implements CRUD {
             return;
         }
         float valor = Float.parseFloat(JOptionPane.showInputDialog("Digite o valor:"));
-        String fkCargoFuncionarioInput = JOptionPane.showInputDialog("Digite o ID do cargo do funcionário:");
-        if (fkCargoFuncionarioInput == null || fkCargoFuncionarioInput.equals("")) {
-            JOptionPane.showMessageDialog(null, "O ID do cargo do funcionário não pode ser nulo.");
-            return;
-        }
-        int fkCargoFuncionario = Integer.parseInt(fkCargoFuncionarioInput);
+        
+	    JComboBox<Item> comboBox = new JComboBox<>();
+	    for (String[] option : options) {
+	        int idOption = Integer.parseInt(option[0]);
+	        String nomeOption = option[1];
+	        comboBox.addItem(new Item(idOption, nomeOption));
+	    }
+
+	    int selecao = JOptionPane.showConfirmDialog(null, comboBox, "Selecione o cargo permitido: ", JOptionPane.OK_CANCEL_OPTION);
+
+	    int fkCargo = 0;
+	    if (selecao == JOptionPane.OK_OPTION) {
+	    	Item opcao = (Item) comboBox.getSelectedItem();
+	        if (opcao != null) {
+	        	fkCargo = opcao.getId();
+	            Log.geraLog("Cargo selecionado: " + opcao.getNome() + " (ID: " + fkCargo + ")");
+	        } else {
+	        	Log.geraLog("Nenhuma opção selecionada.");
+	        }
+	    } else {
+	    	Log.geraLog("Nenhuma opção selecionada.");
+	    }
+	    
         String colunas = "isDisponivel, tempoEstimado, descricao, valor, fkCargoFuncionario";
-        String valores = "'" + isDisponivel + "','" + tempoEstimado + "','" + descricao + "','" + valor + "','" + fkCargoFuncionario + "'";
+        String valores = "'" + isDisponivel + "','" + tempoEstimado + "','" + descricao + "','" + valor + "','" + fkCargo + "'";
 
         int idServico = SQLGenerator.insertSQL(tabela, colunas, valores);
         if (idServico > 0) {
             JOptionPane.showMessageDialog(null, "Serviço cadastrado com sucesso! Código do serviço: " + idServico);
             setIdServico(idServico);
             setDescricao(descricao);
-            setDisponivel(isDisponivel);
+            setDisponivel(isDisponivelInput);
             setTempoEstimado(tempoEstimado);
             setValor(valor);
-            setFkCargoFuncionario(fkCargoFuncionario);
         } else {
             JOptionPane.showMessageDialog(null, "Ocorreu algum erro no cadastro.");
         }
@@ -103,10 +129,23 @@ public class Servico implements CRUD {
 
     @Override
     public void alterar() {
+	    CargoFuncionario cargoFuncionario = new CargoFuncionario();
+	    String[][] options = cargoFuncionario.consultarOptions();
+	    
+        if (options == null || options.length == 0) {
+        	JOptionPane.showMessageDialog(null, "Necessário cadastrar cargos primeiro!");
+        	return;
+        }
+        
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idServico = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do serviço:"));
+        String idServicoIput = JOptionPane.showInputDialog("Digite o código do serviço:");
+	    if (idServicoIput == null || idServicoIput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código do serviço não pode ser nulo.");
+	    	return;
+	    }
+	    int idServico = Integer.parseInt(idServicoIput);
 
         String descricao = JOptionPane.showInputDialog("Digite a descrição:");
         if (descricao != null && !descricao.equals("")) {
@@ -114,9 +153,13 @@ public class Servico implements CRUD {
             valoresList.add(descricao);
         }
 
-        boolean isDisponivel = JOptionPane.showConfirmDialog(null, "Está disponível?") == JOptionPane.YES_OPTION;
+        boolean isDisponivelInput = JOptionPane.showConfirmDialog(null, "Está disponível?") == JOptionPane.YES_OPTION;
+        int isDisponivel = 1;
+        if (!isDisponivelInput) {
+        	isDisponivel = 0;
+        }
         colunasList.add("isDisponivel");
-        valoresList.add(Boolean.toString(isDisponivel));
+        valoresList.add(Integer.toString(isDisponivel));
 
         String tempoEstimadoInput = JOptionPane.showInputDialog("Digite o tempo estimado (HH:MM:SS):");
         if (tempoEstimadoInput != null && !tempoEstimadoInput.equals("")) {
@@ -131,17 +174,36 @@ public class Servico implements CRUD {
             }
         }
 
-        float valor = Float.parseFloat(JOptionPane.showInputDialog("Digite o valor:"));
-        if (valor > 0) {
-            colunasList.add("valor");
-            valoresList.add(Float.toString(valor));
+        String valorInput = JOptionPane.showInputDialog("Digite o valor:");
+        if (valorInput != null && !valorInput.equals("")) {
+	        float valor = Float.parseFloat(valorInput);
+	        if (valor > 0) {
+	            colunasList.add("valor");
+	            valoresList.add(Float.toString(valor));
+	        }
         }
 
-        int fkCargoFuncionario = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do cargo do funcionário:"));
-        if (fkCargoFuncionario > 0) {
-            colunasList.add("fkCargoFuncionario");
-            valoresList.add(Integer.toString(fkCargoFuncionario));
-        }
+	    JComboBox<Item> comboBox = new JComboBox<>();
+	    for (String[] option : options) {
+	        int idOption = Integer.parseInt(option[0]);
+	        String nomeOption = option[1];
+	        comboBox.addItem(new Item(idOption, nomeOption));
+	    }
+
+	    int selecao = JOptionPane.showConfirmDialog(null, comboBox, "Selecione o cargo permitido: ", JOptionPane.OK_CANCEL_OPTION);
+
+	    int fkCargo = 0;
+	    if (selecao == JOptionPane.OK_OPTION) {
+	    	Item opcao = (Item) comboBox.getSelectedItem();
+	        if (opcao != null) {
+	        	fkCargo = opcao.getId();
+	            Log.geraLog("Cargo selecionado: " + opcao.getNome() + " (ID: " + fkCargo + ")");
+	        } else {
+	        	Log.geraLog("Nenhuma opção selecionada.");
+	        }
+	    } else {
+	    	Log.geraLog("Nenhuma opção selecionada.");
+	    }
 
         if (!colunasList.isEmpty() && !valoresList.isEmpty()) {
             String[] colunas = colunasList.toArray(new String[0]);
@@ -149,11 +211,18 @@ public class Servico implements CRUD {
 
             if (SQLGenerator.updateSQL(tabela, idServico, colunas, valores)) {
                 JOptionPane.showMessageDialog(null, "Serviço alterado com sucesso!");
-                setDescricao(descricao);
-                setDisponivel(isDisponivel);
-                setTempoEstimado(Time.valueOf(tempoEstimadoInput));
-                setValor(valor);
-                setFkCargoFuncionario(fkCargoFuncionario);
+                if (colunasList.contains("descricao")) {                	
+                	setDescricao(descricao);
+                }
+                if (colunasList.contains("isDisponivel")) {                	
+                	setDisponivel(isDisponivelInput);
+                }
+                if (colunasList.contains("tempoEstimado")) {                	
+                	setTempoEstimado(Time.valueOf(tempoEstimadoInput));
+                }
+                if (colunasList.contains("valor")) {                	
+                	setValor(valor);
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
             }
@@ -164,7 +233,12 @@ public class Servico implements CRUD {
 
     @Override
     public void excluir() {
-        int idServico = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do serviço:"));
+    	String idServicoIput = JOptionPane.showInputDialog("Digite o código do serviço:");
+	    if (idServicoIput == null || idServicoIput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código do serviço não pode ser nulo.");
+	    	return;
+	    }
+	    int idServico = Integer.parseInt(idServicoIput);
 
         if (SQLGenerator.deleteSQL(tabela, idServico)) {
             JOptionPane.showMessageDialog(null, "Serviço excluído com sucesso!");
@@ -178,11 +252,43 @@ public class Servico implements CRUD {
     }
 
     public void consultar() {
-        int idServico = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do serviço:"));
-
-        String colunas = "idServico, isDisponivel, tempoEstimado, descricao, valor, fkCargoFuncionario";
+    	String idServicoIput = JOptionPane.showInputDialog("Digite o código do serviço:");
+	    if (idServicoIput == null || idServicoIput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código do serviço não pode ser nulo.");
+	    	return;
+	    }
+	    int idServico = Integer.parseInt(idServicoIput);
         String where = "WHERE idServico = " + idServico;
 
-        Relatorio.mostrarDados(SQLGenerator.SelectSQL(colunas, tabela, null, where));
+        Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, where));
     }
+    
+	public String[][] consultarOptions() {
+		String colunas = "idServico, descricao, valor";
+		String where = "WHERE isDisponivel IS NOT NULL AND isDisponivel != '0'";
+	    String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, null, where);
+	
+	    if (resultado == null || resultado.length == 0) {
+	        return new String[0][0];
+	    }
+	
+	    int numeroLinhas = resultado.length -1;
+	    int numeroColunas = resultado[0].length;
+	
+	    String[][] resultadoFormatado = new String[numeroLinhas][2];
+	
+	    for (int i = 0; i < numeroLinhas; i++) {
+	    	resultadoFormatado[i][0] = resultado[i+1][0];
+	        StringBuilder sb = new StringBuilder();
+	        for (int j = 1; j < numeroColunas; j++) {
+                if (j > 1) {
+                    sb.append(" - R$ ");
+                }
+                sb.append(resultado[i+1][j]);
+	        }
+	        resultadoFormatado[i][1] = sb.toString();
+	    }
+	
+	    return resultadoFormatado;
+	}
 }

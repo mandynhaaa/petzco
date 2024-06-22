@@ -55,6 +55,9 @@ public class Pet implements CRUD{
 		}
 		
 	    String nome = JOptionPane.showInputDialog("Digite o nome:");
+	    if (nome == null || nome.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário inserir o nome do pet.");
+	    }
 	    String idade = JOptionPane.showInputDialog("Digite a idade:");
 	    
 	    JComboBox<Item> comboBoxRaca = new JComboBox<>();
@@ -136,7 +139,13 @@ public class Pet implements CRUD{
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
         
-		int idPet = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do pet:"));
+		String idPetInput = JOptionPane.showInputDialog("Digite o código do pet:");
+	    if (idPetInput == null || idPetInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código do pet não pode ser nulo.");
+	    	return;
+	    }
+		
+		int idPet = Integer.parseInt(idPetInput);
 		String nome = JOptionPane.showInputDialog("Digite o nome:");
         if (nome != null && !nome.equals("")) {
             colunasList.add("nome");
@@ -214,7 +223,13 @@ public class Pet implements CRUD{
 	}
 	@Override
 	public void excluir() {
-		int idPet = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do pet:"));
+		String idPetInput = JOptionPane.showInputDialog("Digite o código do pet:");
+	    if (idPetInput == null || idPetInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código do pet não pode ser nulo.");
+	    	return;
+	    }
+		
+		int idPet = Integer.parseInt(idPetInput);
     	
     	if (SQLGenerator.deleteSQL(tabela, idPet)) {
     		JOptionPane.showMessageDialog(null, "Pet excluído com sucesso!");
@@ -229,7 +244,7 @@ public class Pet implements CRUD{
 	}
 	
 	public String[][] consultarOptions() {
-		String colunas = "idPet, nome, cliente.nome dono";
+		String colunas = "idPet, pet.nome, cliente.nome dono";
 		String join = "INNER JOIN cliente on (cliente.idCliente = pet.fkCliente)";
 	    String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, join, null);
 	

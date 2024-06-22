@@ -15,6 +15,7 @@ public class Especie implements CRUD {
 	private String nomeCientifico;
 	private String vidaMedia;
 	private String descricao;
+	
 	public int getIdEspecie() {
 		return idEspecie;
 	}
@@ -48,6 +49,10 @@ public class Especie implements CRUD {
 	@Override
 	public void cadastrar() {
 	    String nome = JOptionPane.showInputDialog("Digite o nome da espécie:");
+	    if (nome == null || nome.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário incluir o nome da espécie.");
+	    }
+	    
 	    String nomeCientifico = JOptionPane.showInputDialog("Digite o nome científico da espécie:");
 	    String vidaMedia = JOptionPane.showInputDialog("Digite a vida média da espécie:");
 	    String descricao = JOptionPane.showInputDialog("Digite a descrição da espécie:");
@@ -72,10 +77,14 @@ public class Especie implements CRUD {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idEspecie = Integer.parseInt(JOptionPane.showInputDialog("Digite o código da espécie:"));
+        String idEspecieInput = JOptionPane.showInputDialog("Digite o código da espécie:");
+	    if (idEspecieInput == null || idEspecieInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código da espécie não pode ser nulo.");
+	    }
+	    int idEspecie = Integer.parseInt(idEspecieInput);
         String nome = JOptionPane.showInputDialog("Digite o nome:");
         if (nome != null && !nome.equals("")) {
-            colunasList.add("nomeCargo");
+            colunasList.add("nome");
             valoresList.add(nome);
         }
 
@@ -103,10 +112,18 @@ public class Especie implements CRUD {
         	
         	if (SQLGenerator.updateSQL(tabela, idEspecie, colunas, valores)) {
         		JOptionPane.showMessageDialog(null, "Espécie alterada com sucesso!");
-            	setNome(nome);                                                                                                       
-            	setNomeCientifico(nomeCientifico);
-            	setVidaMedia(vidaMedia);
-            	setDescricao(descricao);
+        		if (colunasList.contains("nome")) {        			
+        			setNome(nome);                                                                                                       
+        		}
+        		if (colunasList.contains("nomeCientifico")) {
+        			setNomeCientifico(nomeCientifico);
+        		}
+            	if (colunasList.contains("vidaMedia")) {
+            		setVidaMedia(vidaMedia);
+            	}
+            	if (colunasList.contains("descricao")) {
+            		setDescricao(descricao);
+            	}
         	} else {
         		JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
         	}

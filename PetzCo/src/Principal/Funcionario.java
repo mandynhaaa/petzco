@@ -50,7 +50,13 @@ public class Funcionario extends Contato implements CRUD {
         }
         
 	    String nome = JOptionPane.showInputDialog("Digite o nome:");
+	    if (nome == null || nome.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário inserir o nome do funcionário.");
+	    }
 	    String cpf = JOptionPane.showInputDialog("Digite o CPF:");
+	    if (cpf == null || cpf.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O CPF não pode ser nulo.");
+	    }
 	    String telefone = JOptionPane.showInputDialog("Digite a telefone:");
 	    String email = JOptionPane.showInputDialog("Digite o e-mail:");
 	    String dataContratacaoInput = JOptionPane.showInputDialog("Digite a data de contratação (dd/MM/yyyy):");
@@ -122,7 +128,13 @@ public class Funcionario extends Contato implements CRUD {
         ArrayList<String> colunasList = new ArrayList<>();
         ArrayList<String> valoresList = new ArrayList<>();
 
-        int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionario:"));
+        String idFuncionarioInput = JOptionPane.showInputDialog("Digite o código do funcionário:");
+        if (idFuncionarioInput == null || idFuncionarioInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do funcionário não pode ser nulo.");
+            return;
+        }
+        int idFuncionario = Integer.parseInt(idFuncionarioInput);
+        
         String nome = JOptionPane.showInputDialog("Digite o nome:");
         if (nome != null) {
             colunasList.add("nome");
@@ -191,13 +203,23 @@ public class Funcionario extends Contato implements CRUD {
         String[] colunas = colunasList.toArray(new String[0]);
         String[] valores = valoresList.toArray(new String[0]);
 
-        if (SQLGenerator.updateSQL(tabela, idCliente, colunas, valores)) {
-            JOptionPane.showMessageDialog(null, "Funcionario alterado com sucesso!");
-        	setNome(nome);
-        	setCpf(cpf);
-        	setTelefone(telefone);
-        	setEmail(email);
-        	setDataContratacao(dataContratacaoInput);
+        if (SQLGenerator.updateSQL(tabela, idFuncionario, colunas, valores)) {
+            JOptionPane.showMessageDialog(null, "Funcionário alterado com sucesso!");
+            if (colunasList.contains("nome")) {
+            	setNome(nome);
+            }
+            if (colunasList.contains("cpf")) {
+            	setCpf(cpf);
+            }
+            if (colunasList.contains("telefone")) {
+            	setTelefone(telefone);
+            }
+        	if (colunasList.contains("email")) {
+        		setEmail(email);
+        	}
+        	if (colunasList.contains("dataContratacao")) {
+        		setDataContratacao(dataContratacaoInput);
+        	}
         } else {
             JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
         }
@@ -205,9 +227,14 @@ public class Funcionario extends Contato implements CRUD {
     
     @Override
     public void excluir() {
-    	int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário:"));
+    	String idFuncionarioInput = JOptionPane.showInputDialog("Digite o código do funcionário:");
+        if (idFuncionarioInput == null || idFuncionarioInput.equals("")) {
+            JOptionPane.showMessageDialog(null, "O código do funcionário não pode ser nulo.");
+            return;
+        }
+        int idFuncionario = Integer.parseInt(idFuncionarioInput);
     	
-    	if (SQLGenerator.deleteSQL(tabela, idCliente)) {
+    	if (SQLGenerator.deleteSQL(tabela, idFuncionario)) {
     		JOptionPane.showMessageDialog(null, "Funcionário excluído com sucesso!");
     	} else {
             JOptionPane.showMessageDialog(null, "Ocorreu algum erro na exclusão.");
@@ -220,7 +247,7 @@ public class Funcionario extends Contato implements CRUD {
     }
     
     public void consultar() {
-    	int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do cliente:"));
+    	int idCliente = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do funcionário:"));
     	
     	String colunas = "idFuncionario, nome, cpf, telefone, email, dataNascimento, idEndereco, "
     					+ "rua, numero, bairro, cidade, estado, complemento, cep";
@@ -230,5 +257,33 @@ public class Funcionario extends Contato implements CRUD {
     	Relatorio.mostrarDados(SQLGenerator.SelectSQL(colunas, tabela, join, where));
     }
     
+    public String[][] consultarOptions() {
+		String colunas = "idFuncionario, nome, cargoFuncionario.nomeCargo cargo";
+		String join = "INNER JOIN cargoFuncionario on (cargoFuncionario.idCargoFuncionario = funcionario.fkCargoFuncionario)";
+	    String[][] resultado = SQLGenerator.SelectSQL(colunas, tabela, join, null);
+	
+	    if (resultado == null || resultado.length == 0) {
+	        return new String[0][0];
+	    }
+	
+	    int numeroLinhas = resultado.length -1;
+	    int numeroColunas = resultado[0].length;
+	
+	    String[][] resultadoFormatado = new String[numeroLinhas][2];
+	
+	    for (int i = 0; i < numeroLinhas; i++) {
+	    	resultadoFormatado[i][0] = resultado[i+1][0];
+	        StringBuilder sb = new StringBuilder();
+	        for (int j = 1; j < numeroColunas; j++) {
+                if (j > 1) {
+                    sb.append(" - ");
+                }
+                sb.append(resultado[i+1][j]);
+	        }
+	        resultadoFormatado[i][1] = sb.toString();
+	    }
+	
+	    return resultadoFormatado;
+	}
 }
 

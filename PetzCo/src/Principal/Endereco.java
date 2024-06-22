@@ -81,13 +81,17 @@ public class Endereco implements CRUD {
 	    String cidade = JOptionPane.showInputDialog("Digite a cidade:");
 	    String bairro = JOptionPane.showInputDialog("Digite o bairro:");
 	    String rua = JOptionPane.showInputDialog("Digite a rua:");
-		String numeroInput = JOptionPane.showInputDialog("Digite o numero:");
+		String numeroInput = JOptionPane.showInputDialog("Digite o número:");
         if (numeroInput == null || numeroInput.equals("")) {
             JOptionPane.showMessageDialog(null, "O número não pode ser nulo.");
             return;
-        }	
+        }
+        int numero = Integer.parseInt(numeroInput);
 		String complemento = JOptionPane.showInputDialog("Digite o complemento:");
 	    String cep = JOptionPane.showInputDialog("Digite o CEP:");
+	    if (cep == null || cep.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O CEP não pode ser nulo.");
+	    }
 
 	    String colunas = "rua, numero, bairro, cidade, estado, complemento, cep";
 	    String valores = "'" + rua + "'," + numero + ",'" + bairro + "','" + cidade
@@ -175,14 +179,30 @@ public class Endereco implements CRUD {
 	
 	        if (SQLGenerator.updateSQL(tabela, idEndereco, colunas, valores)) {
 	            JOptionPane.showMessageDialog(null, "Endereço alterado com sucesso!");
-	        	setPais(pais);
-	        	setEstado(estado);
-	        	setCidade(cidade);
-	        	setBairro(bairro);
-	        	setRua(rua);
-	        	setNumero(numero);
-	        	setComplemento(complemento);
-	        	setCep(cep);
+	            if (colunasList.contains("pais")) {      	
+	            	setPais(pais);
+	            }
+	            if (colunasList.contains("estado")) {
+	            	setEstado(estado);
+	            }
+	        	if (colunasList.contains("cidade")) {
+	        		setCidade(cidade);
+	        	}
+	        	if (colunasList.contains("bairro")) {
+	        		setBairro(bairro);
+	        	}
+	        	if (colunasList.contains("rua")) {	        		
+	        		setRua(rua);
+	        	}
+	        	if (colunasList.contains("numero")) {
+	        		setNumero(numero);
+	        	}
+	        	if (colunasList.contains("complemento")) {
+	        		setComplemento(complemento);
+	        	}
+	        	if (colunasList.contains("cep")) {
+	        		setCep(cep);
+	        	}
 	        } else {
 	            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
 	        }
