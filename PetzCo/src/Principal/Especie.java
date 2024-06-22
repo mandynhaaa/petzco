@@ -51,6 +51,7 @@ public class Especie implements CRUD {
 	    String nome = JOptionPane.showInputDialog("Digite o nome da espécie:");
 	    if (nome == null || nome.equals("")) {
 	    	JOptionPane.showMessageDialog(null, "Necessário incluir o nome da espécie.");
+	    	return;
 	    }
 	    
 	    String nomeCientifico = JOptionPane.showInputDialog("Digite o nome científico da espécie:");
@@ -133,7 +134,11 @@ public class Especie implements CRUD {
 	}
 	@Override
 	public void excluir() {
-    	int idEspecie = Integer.parseInt(JOptionPane.showInputDialog("Digite o código da espécie:"));
+		String idEspecieInput = JOptionPane.showInputDialog("Digite o código da espécie:");
+	    if (idEspecieInput == null || idEspecieInput.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O código da espécie não pode ser nulo.");
+	    }
+	    int idEspecie = Integer.parseInt(idEspecieInput);
     	
     	if (SQLGenerator.deleteSQL(tabela, idEspecie)) {
     		JOptionPane.showMessageDialog(null, "Espécie excluída com sucesso!");

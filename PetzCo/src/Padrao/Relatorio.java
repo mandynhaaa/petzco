@@ -29,7 +29,7 @@ public class Relatorio {
     }
 
     private static String formatarNomeColuna(String nomeColuna) {
-    	if (nomeColuna.startsWith("id")) {    		
+    	if (nomeColuna.startsWith("id") && !nomeColuna.equals("idade")) {    		
     		return "Código " + nomeColuna.substring(2);
     	}
     	switch (nomeColuna) {

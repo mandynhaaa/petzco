@@ -351,7 +351,12 @@ public class Agendamento implements CRUD {
     }
 
     public void listar() {
-        Relatorio.mostrarDados(SQLGenerator.SelectSQL(null, tabela, null, null));
+    	String colunas = "idAgendamento, dataAgendamento, observacao, servico.descricao servico, funcionario.nome profissional, pet.nome pet";
+    	String join = "INNER JOIN servico on (servico.idServico = agendamento.fkServico) "
+    			+ "INNER JOIN pet on (pet.idPet = agendamento.fkPet) "
+    			+ "INNER JOIN funcionario on (funcionario.idFuncionario = agendamento.fkFuncionario)";
+    			
+        Relatorio.mostrarDados(SQLGenerator.SelectSQL(colunas, tabela, join, "ORDER BY dataAgendamento"));
     }
 
     public void consultar() {

@@ -163,7 +163,6 @@ public class Raca implements CRUD {
 	    }
 	    int idRaca = Integer.parseInt(idRacaInput);
 
-    	
     	if (SQLGenerator.deleteSQL(tabela, idRaca)) {
     		JOptionPane.showMessageDialog(null, "Raça excluído com sucesso!");
     	} else {
