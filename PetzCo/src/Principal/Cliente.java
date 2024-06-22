@@ -38,8 +38,14 @@ public class Cliente extends Contato implements CRUD {
     
     @Override
     public void cadastrar() {
-	    String nome = JOptionPane.showInputDialog("Digite o nome:");
+    	String nome = JOptionPane.showInputDialog("Digite o nome:");
+	    if (nome == null || nome.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "Necessário inserir o nome do funcionário.");
+	    }
 	    String cpf = JOptionPane.showInputDialog("Digite o CPF:");
+	    if (cpf == null || cpf.equals("")) {
+	    	JOptionPane.showMessageDialog(null, "O CPF não pode ser nulo.");
+	    }
 	    String telefone = JOptionPane.showInputDialog("Digite a telefone:");
 	    String email = JOptionPane.showInputDialog("Digite o e-mail:");
 	    String dataNascimentoInput = JOptionPane.showInputDialog("Digite a data de nascimento (dd/MM/yyyy):");
@@ -129,11 +135,25 @@ public class Cliente extends Contato implements CRUD {
 	
 	        if (SQLGenerator.updateSQL(tabela, idCliente, colunas, valores)) {
 	            JOptionPane.showMessageDialog(null, "Cliente alterado com sucesso!");
-	        	setNome(nome);
-	        	setCpf(cpf);
-	        	setTelefone(telefone);
-	        	setEmail(email);
-	        	setDataNascimento(dataNascimentoInput);
+	            if (colunasList.contains("nome")) {	
+	            	setNome(nome);
+	            }
+	            
+	            if (colunasList.contains("cpf")) {
+	            	setCpf(cpf);
+	            }
+	            
+	            if (colunasList.contains("telefone")) {
+	            	setTelefone(telefone);
+	            }
+	            
+	            if (colunasList.contains("email")) {
+	            	setEmail(email);
+	            }
+	            
+	            if (colunasList.contains("dataNascimento")) {
+	            	setDataNascimento(dataNascimentoInput);
+	            }
 	        } else {
 	            JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
 	        }

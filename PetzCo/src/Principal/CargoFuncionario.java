@@ -81,8 +81,12 @@ public class CargoFuncionario implements CRUD {
         	
         	if (SQLGenerator.updateSQL(tabela, idCargo, colunas, valores)) {
         		JOptionPane.showMessageDialog(null, "Cargo alterado com sucesso!");
-        		setNomeCargo(nomeCargo);
-        		setSalarioBase(salarioBase);
+        		if (colunasList.contains("nomeCargo")) {			
+        			setNomeCargo(nomeCargo);
+        		}
+        		if (colunasList.contains("salarioBase")) {
+        			setSalarioBase(salarioBase);
+        		}
         	} else {
         		JOptionPane.showMessageDialog(null, "Ocorreu algum erro na alteração.");
         	}
@@ -93,7 +97,6 @@ public class CargoFuncionario implements CRUD {
     
     @Override
     public void excluir() {
-        
         String idCargoInput = JOptionPane.showInputDialog("Digite o código do cargo:");
         if (idCargoInput == null || idCargoInput.equals("")) {
             JOptionPane.showMessageDialog(null, "O código do cargo não pode ser nulo.");
